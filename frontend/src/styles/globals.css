@@ -1,0 +1,257 @@
+@import 'tailwindcss';
+
+/* Self-hosted variable fonts. No <link> to Google Fonts.
+   Display: Bricolage Grotesque  ·  UI: Geist  ·  Numerals: Geist Mono */
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/* Dark mode is class-driven so Settings can offer light / dark / system.
+   The `system` choice resolves to a class in JS (see useTheme). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   STATIC SCALES
+   Palette rationale: the syllabus data needs red / amber / green to carry
+   PRIORITY meaning, so the brand accent must stay out of that range. Cobalt
+   on warm paper keeps the semantic channel free and avoids the indigo-violet
+   default that every AI study app ships with.
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Warm neutral. One temperature for the whole project, light and dark. */
+  --color-sand-50: #fbfaf8;
+  --color-sand-100: #f5f3ef;
+  --color-sand-200: #e9e6df;
+  --color-sand-300: #d6d2c8;
+  --color-sand-400: #a9a49a;
+  --color-sand-500: #7c776d;
+  --color-sand-600: #5c574f;
+  --color-sand-700: #423e38;
+  --color-sand-800: #2a2724;
+  --color-sand-900: #1a1917;
+  --color-sand-950: #111110;
+
+  /* Cobalt: the single accent. Flat and confident, never a neon glow. */
+  --color-cobalt-50: #eff3fe;
+  --color-cobalt-100: #dce4fd;
+  --color-cobalt-200: #becdfb;
+  --color-cobalt-300: #93acf8;
+  --color-cobalt-400: #6685f3;
+  --color-cobalt-500: #4361ea;
+  --color-cobalt-600: #2e4fe0;
+  --color-cobalt-700: #253fc0;
+  --color-cobalt-800: #1f3499;
+  --color-cobalt-900: #1e2f73;
+  --color-cobalt-950: #151e45;
+
+  /* Priority semantics. Muted enough to sit on warm paper without vibrating. */
+  --color-high-50: #fdf0ef;
+  --color-high-200: #f6ccc8;
+  --color-high-500: #d1554b;
+  --color-high-600: #c8453c;
+  --color-high-700: #a5352e;
+  --color-high-900: #5e211d;
+
+  --color-mid-50: #fdf5e7;
+  --color-mid-200: #f5e0b3;
+  --color-mid-500: #cf8a1c;
+  --color-mid-600: #c77e12;
+  --color-mid-700: #9d6210;
+  --color-mid-900: #573609;
+
+  --color-low-50: #edf7f1;
+  --color-low-200: #c2e3d1;
+  --color-low-500: #37936b;
+  --color-low-600: #2e7d5b;
+  --color-low-700: #256349;
+  --color-low-900: #143529;
+
+  /* Typography */
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+
+  /* SHAPE CONSISTENCY LOCK. The documented rule, followed everywhere:
+     buttons + chips = pill · cards = 16px · large panels = 24px · inputs = 12px */
+  --radius-input: 0.75rem;
+  --radius-card: 1rem;
+  --radius-panel: 1.5rem;
+
+  /* Shadows tinted to the warm base. No pure-black drop shadows. */
+  --shadow-card: 0 1px 2px rgb(42 39 36 / 0.04), 0 1px 3px rgb(42 39 36 / 0.06);
+  --shadow-lift: 0 4px 12px rgb(42 39 36 / 0.07), 0 12px 28px rgb(42 39 36 / 0.08);
+  --shadow-modal: 0 24px 60px rgb(26 25 23 / 0.22);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   SEMANTIC TOKENS
+   `@theme inline` matters here: it compiles utilities down to var(--paper)
+   rather than baking in the light value, which is what lets `.dark` swap them.
+   --------------------------------------------------------------------------- */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+}
+
+@layer base {
+  :root {
+    --paper: #fbfaf8;
+    --surface: #ffffff;
+    --raised: #f5f3ef;
+    --line: #e9e6df;
+    --line-strong: #d6d2c8;
+    --ink: #1a1917;
+    --ink-soft: #423e38;
+    --ink-muted: #5c574f;
+    --ink-faint: #a9a49a;
+    --accent: #2e4fe0;
+    --accent-hover: #253fc0;
+    --accent-soft: #eff3fe;
+    --accent-ink: #ffffff;
+  }
+
+  .dark {
+    --paper: #111110;
+    --surface: #1a1917;
+    --raised: #221f1d;
+    --line: #2f2b27;
+    --line-strong: #423e38;
+    --ink: #f5f3ef;
+    --ink-soft: #d6d2c8;
+    --ink-muted: #a9a49a;
+    --ink-faint: #7c776d;
+    /* Lifted in dark so the accent keeps AA contrast against #111110 and
+       stays recognisably the same brand blue. */
+    --accent: #6685f3;
+    --accent-hover: #93acf8;
+    --accent-soft: #1b2242;
+    --accent-ink: #111110;
+  }
+
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Numerals never reflow while a countdown or timer ticks. */
+  .font-mono,
+  [class*='font-mono'] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* Visible, branded focus ring for keyboard users only. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    /* ink-muted, not ink-faint: placeholders must clear WCAG AA on surface. */
+    color: var(--ink-muted);
+    opacity: 1;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border: 3px solid var(--paper);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ink-faint);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+  }
+
+  /* Display type wants tight tracking; the descender reserve keeps italic
+     `g` and `y` from clipping at leading-[1.05]. */
+  .text-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    padding-bottom: 0.08em;
+  }
+
+  .text-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* Hairline grid used only where it organises real content. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  }
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+}
+
+/* Global brake. Every Motion component also checks useReducedMotion(), but
+   this catches CSS transitions and any third-party animation too. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
